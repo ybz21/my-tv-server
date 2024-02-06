@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MyTVServer</title>
+
+    <link rel="stylesheet" href="static/codemirror.css">
+    <script src="static/codemirror.js"></script>
+</head>
+<body>
+<h1>MyTVServer</h1>
+<h2>Update TV Channels(更新频道列表)</h2>
+<input type="text" id="tokenInput" placeholder="Enter token(输入管理员token)" style="width: 100%;">
+<div style="height: 10px"></div>
+<div id="channels" style="width: 100%;"></div>
+<br>
+<button onclick="updateTVList()"style="width: 100%;">Update(更新)</button>
+
+<script>
+    var editor = CodeMirror(document.getElementById("channels"), {
+        mode: "application/json",
+        lineNumbers: true,
+        indentUnit: 4,
+    });
+
+    function getTVList() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/channels", true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    var tvList = JSON.parse(xhr.responseText);
+                    editor.setValue(JSON.stringify(tvList, null, 4));
+                } else {
+
+                    alert("Failed to get TV channels" + xhr.responseText);
+                }
+            }
+        };
+        xhr.send();
+    }
+
+
+    function updateTVList() {
+        var token = document.getElementById("tokenInput").value;  // 获取输入框中的令牌值
+        var updatedTVList = editor.getValue();
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/channels", true);
+        xhr.setRequestHeader("Authorization", "Bearer " + token);  // 将令牌作为头部信息发送到服务器
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    alert("TV channels updated successfully(更新成功)");
+                    location.reload();
+                } else {
+                    alert("Failed to update TV channels(更新失败): " + xhr.responseText);
+                }
+            }
+        };
+        xhr.send(updatedTVList);
+    }
+
+
+    window.onload = function () {
+        getTVList();
+    };
+</script>
+<div style="height: 10px"/>
+
+</body>
+</html>

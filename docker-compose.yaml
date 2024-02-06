@@ -1,0 +1,9 @@
+services:
+  my-tv-server:
+    build:
+      context: .
+      dockerfile: 'Dockerfile'
+    environment:
+      TOKEN: "my-tv-server" # put your token here
+    ports:
+      - 8080:8080
