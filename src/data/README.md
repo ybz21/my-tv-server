@@ -1,0 +1,1 @@
+# 将如下链接内容粘贴进入channels.json https://github.com/lizongying/my-tv/blob/4fb27ba502ff29da165cbd281b86fd5e1d370837/app/src/main/res/raw/channels.json
